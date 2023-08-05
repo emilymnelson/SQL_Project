@@ -1,0 +1,6 @@
+Compile cfgames.py first with terminal command:
+python cfgames.py
+
+Then create API with terminal command:
+python3 app.py
+
