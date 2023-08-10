@@ -8,7 +8,7 @@ The .py file that creates my API is called app.py, and is run by calling:
 python3 app.py
 on the terminal
 
-To access API, copy and paste http://127.0.0.1:5000/ into browser to see menu of options.
+To access API, copy and paste http://127.0.0.1:5000/ into browser to see menu of options while app.py is running in terminal.
 
 
 The cfgames.py file must be compiled first, as it created the db file that the API depends on.
