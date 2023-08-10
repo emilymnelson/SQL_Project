@@ -1,6 +1,88 @@
-Compile cfgames.py first with terminal command:
-python cfgames.py
 
-Then create API with terminal command:
+
+
+The .py file that creates my SQL database is named cfgames.py, and is run by calling:
+python cfgames.py
+on the terminal
+The .py file that creates my API is called app.py, and is run by calling:
 python3 app.py
+on the terminal
+
+To access API, copy and paste http://127.0.0.1:5000/ into browser to see menu of options.
+
+
+The cfgames.py file must be compiled first, as it created the db file that the API depends on.
+Both of these files depend on the .csv file codefoobackend_cfgames.csv, which I included in the folder.
+
+
+Here are my written answers for the Back End project, including an explanation into how I am storing, sanitizing, normalizing and indexing the data.
+
+
+1) SQL Database- I used SQLite as my database engine. SQLite comes preintalled on MacOsX systems, you can check by going to the terminal and typing
+in sqlite3, if not already installed it can be installed here:
+https://www.sqlite.org/download.html
+
+The database is created when database.py is run from Terminal in the folder called BackEnd_DB that is in my repo- 
+I did it in my Terminal by just typing python cfgames.py, which creates a database called cfgames.db, and one table called cfgames (explanation
+for why I chose to leave it as one table instead of splitting it up is below)
+
+I was able to use terminal commands of sqlite such as ORDER BY to quickly see 
+the highest/lowest rated entries. 
+
+
+Sanitizing- 
+The region column seems entirely useless, as it consists of only {US, AU, UK, JP} for 96 entries, which gives us no useful information, so I removed
+it from the database upon creation.
+The franchises column doesn't really add much, but it does provide us with some identifying information about the entries so I left it.
+Since I'm not expecting any additions to the database, I chose not to include input sanitization, including guarding against Bobby Tables ;) 
+
+
+Normalizing- To normalize the database, we will make sure the database meets the criteria for the normal forms of databases.
+First Normal Form-  We don't have any row order to convey information, nor do we have any mixed data types. 
+We do need to pick a primary key- my primary key is the name. A quick Excel function reveals that in our database, we don't have any duplicate
+entries with the same name, so this will suffice as our primary key. It is important to use name instead of short_name, as we have two entries
+with a short_name of FIFA20. Another option that would work would be the slug value.
+If we were dealing with a larger database, or one that a client could add records to, it would be wise to create a table for each media_type, 
+Movie, Show, Comic, etc, to prevent any two entries with the same name but different media types. (A game and a movie both just named Batman) I debated
+for a while whether or not to do this but my decision ultimately came down to the database being a static file, and no two names being the same, so the
+entire file in one table will be fine.
+The created_at/updated_at columns are a mix of date and time which could be changed if I wanted it to be functional to sort by, but as it seems very 
+unlikely that a client would want to sort based on date created at or date last updated, and this data is only really useful as a string to keep track
+of when a review was created or last modified.
+Second Normal Form- Each non-key attribute in the table depends on the primary key of name, so we won't need to create any additional tables. Again
+if we had any entries with the same name/different media_type we would need to fix this for it to be in second normal form.
+Third Normal Form- We don't have any transitive dependencies, so our database is in third normal form. If it were possible that a review score
+can be updated over time, and say we had another attribute like how Rotten Tomatoes determines if a movie is Rotten/Fresh and we store that 
+as a boolean variable, we would need another table to keep track of the review scores and its Rotten/Fresh valuation.
+Fourth/Fifth Normal Form- We don't have any multivalue dependencies, and the table cannot be describable as the logical result of joining two or more
+tables together, so we are in Fifth normal form. 
+Indexing- I chose to create indexes for Media type, Review Score, Genres and Published By, as these were the columns that had the least null entries 
+when I looked at the csv file, and these were the categories that a client would most likely want to search this db for. 
+I would anticipate that a client would want to look at a list of all movies, or all movies published by DC comics, or all that belong to the Drama
+genre, while the Short/Long descriptions, or the slug category don't seem particularly sortable/categorizable.
+Creating indexes also requires storage and takes additional time to compile, so it seemed wise to pick a few impactful indexes and go with them.
+These indexes will make searching our database much faster!
+
+
+
+
+2) API Service- I used Flask to build this API, so this will need to be installed if not already installed on your system:
+pip3 install flask Flask-RESTful Flask-SQLAlchemy
+I also used numpy and json, so if not already installed:
+pip3 install numpy
+(My python is Python 3 so the command is pip3 instead if pip, and my terminal command was python3 api.py to get the API running.)
+
+
+The server is created when python3 app.py is called from Terminal when in the folder where my other files are stored.
+On my computer, it runs on port http://127.0.0.1:5000, which can be copied and pasted into my browser to see the menu of options.
+
+
+I chose to include a few different endpoints: The database in its entirety, all movies, all shows, and all games, then those three categories when
+sorted by their rank in descending order. I chose to format my API in this way because I saw shows/games/movies as the more highly requested 
+media_types (not really a comic person myself). I chose to make it so that these lists can be viewed in descending order because it seems to me
+that a very highly desired feature of this database is for a client to be able to pick the media_type, and see all of the reviews in descending
+order so that the highest ranked are at the very top. 
+
+
+
 
