@@ -34,7 +34,7 @@ Sanitizing-
 The region column seems entirely useless, as it consists of only {US, AU, UK, JP} for 96 entries, which gives us no useful information, so I removed
 it from the database upon creation.
 The franchises column doesn't really add much, but it does provide us with some identifying information about the entries so I left it.
-Since I'm not expecting any additions to the database, I chose not to include input sanitization, including guarding against Bobby Tables ;) 
+Since the database is not built to be receive additional entries, I chose not to include input sanitization or guard against injections.
 
 
 Normalizing- To normalize the database, we will make sure the database meets the criteria for the normal forms of databases.
